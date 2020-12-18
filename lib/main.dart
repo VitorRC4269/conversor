@@ -33,25 +33,34 @@ void main() async {
       )));
 }
 
-http.Response response;
-Future<Map> getData() async {
-  if (response == null) {
-    response = await http.get(request);
-  }
-  return json.decode(response.body);
-}
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  Future<Map> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = getData();
+  }
+
+  http.Response response;
+  Future<Map> getData() async {
+    if (response == null) {
+      response = await http.get(request);
+    }
+    return json.decode(response.body);
+  }
+
   final realController = TextEditingController();
   final dolarController = TextEditingController();
   final euroController = TextEditingController();
 
-  var moedaSelecionada = "Real";
+  var moedaS1 = "Real";
+  var moedaS2 = "Dolar";
 
   double dolar;
   double euro;
@@ -113,7 +122,7 @@ class _HomeState extends State<Home> {
         centerTitle: true,
       ),
       body: FutureBuilder<Map>(
-        future: getData(),
+        future: _future,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -148,24 +157,35 @@ class _HomeState extends State<Home> {
                         size: 150.0,
                         color: Colors.amber,
                       ),
+                      DropdownButton(
+                        items: listaMoedas,
+                        onChanged: (moeda) {
+                          setState(() {
+                            moedaS1 = moeda;
+                          });
+                        },
+                        value: moedaS1,
+                        style: TextStyle(fontSize: 25.0, color: Colors.amber),
+                      ),
                       buildTextField(
                           "Reais", "R\$", realController, _realChanged),
                       Divider(),
                       buildTextField(
                           "Dólares", "U\$", dolarController, _dolarChanged),
                       Divider(),
-                      buildTextField(
-                          "Euros", "€", euroController, _euroChanged),
-                      Divider(),
                       DropdownButton(
                         items: listaMoedas,
                         onChanged: (moeda) {
                           setState(() {
-                            moedaSelecionada = moeda;
+                            moedaS2 = moeda;
                           });
                         },
-                        value: moedaSelecionada,
+                        value: moedaS2,
+                        style: TextStyle(fontSize: 25.0, color: Colors.amber),
                       ),
+                      buildTextField(
+                          "Euros", "€", euroController, _euroChanged),
+                      Divider(),
                       RaisedButton(
                         onPressed: () {
                           Navigator.push(
