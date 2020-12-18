@@ -33,8 +33,11 @@ void main() async {
       )));
 }
 
+http.Response response;
 Future<Map> getData() async {
-  http.Response response = await http.get(request);
+  if (response == null) {
+    response = await http.get(request);
+  }
   return json.decode(response.body);
 }
 
