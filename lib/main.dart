@@ -1,3 +1,5 @@
+import 'package:conversor/moeda.dart';
+import 'package:conversor/teste.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -46,6 +48,8 @@ class _HomeState extends State<Home> {
   final dolarController = TextEditingController();
   final euroController = TextEditingController();
 
+  var moedaSelecionada = "Real";
+
   double dolar;
   double euro;
 
@@ -84,6 +88,17 @@ class _HomeState extends State<Home> {
     dolarController.text = "";
     euroController.text = "";
   }
+
+  var listaMoedas = [
+    DropdownMenuItem(
+      child: Text("Real"),
+      value: "Real",
+    ),
+    DropdownMenuItem(
+      child: Text("Dolar"),
+      value: "Dolar",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +153,30 @@ class _HomeState extends State<Home> {
                       Divider(),
                       buildTextField(
                           "Euros", "€", euroController, _euroChanged),
+                      Divider(),
+                      DropdownButton(
+                        items: listaMoedas,
+                        onChanged: (moeda) {
+                          setState(() {
+                            moedaSelecionada = moeda;
+                          });
+                        },
+                        value: moedaSelecionada,
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PaginaMoeda()),
+                          );
+                        },
+                        child: Text(
+                          "Criar Nova Moeda",
+                          style: TextStyle(fontSize: 25.0, color: Colors.black),
+                        ),
+                        color: Colors.amber,
+                      )
                     ],
                   ),
                 );
