@@ -55,16 +55,51 @@ class _HomeState extends State<Home> {
     return json.decode(response.body);
   }
 
-  final realController = TextEditingController();
-  final dolarController = TextEditingController();
-  final euroController = TextEditingController();
+  //final realController = TextEditingController();
+  //final dolarController = TextEditingController();
+  //final euroController = TextEditingController();
 
-  var moedaS1 = "Real";
-  var moedaS2 = "Dolar";
+  final moedaController1 = TextEditingController();
+  final moedaController2 = TextEditingController();
+
+  var moedaS1 = 1.0;
+  var moedaS2 = 2.0;
+  var resultado;
 
   double dolar;
   double euro;
 
+  void _moedaChanged(String text) {
+    if (text.isEmpty) {
+      _clearAll();
+      return;
+    }
+
+    double entrada;
+    double saida;
+
+    if (moedaS1 == 2.0) {
+      entrada = dolar;
+    } else if (entrada == 3.0) {
+      entrada = euro;
+    } else {
+      entrada = moedaS1;
+    }
+
+    if (moedaS2 == 2.0) {
+      saida = dolar;
+    } else if (moedaS2 == 3.0) {
+      saida = euro;
+    } else {
+      saida = moedaS2;
+    }
+
+    double valor = double.parse(text);
+
+    moedaController2.text = (valor * entrada / saida).toStringAsFixed(2);
+  }
+
+/*
   void _realChanged(String text) {
     if (text.isEmpty) {
       _clearAll();
@@ -94,24 +129,62 @@ class _HomeState extends State<Home> {
     realController.text = (euro * this.euro).toStringAsFixed(2);
     dolarController.text = (euro * this.euro / dolar).toStringAsFixed(2);
   }
-
+*/
   void _clearAll() {
-    realController.text = "";
-    dolarController.text = "";
-    euroController.text = "";
+    moedaController1.text = "";
+    moedaController2.text = "";
   }
 
   var listaMoedas = [
     DropdownMenuItem(
       child: Text("Real"),
-      value: "Real",
+      value: 1.0,
     ),
     DropdownMenuItem(
       child: Text("Dolar"),
-      value: "Dolar",
+      value: 2.0,
+    ),
+    DropdownMenuItem(
+      child: Text("Euro"),
+      value: 3.0,
     ),
   ];
+/*
+  void gerarDDList(double dolar, double euro) {
+    listaMoedas.clear();
 
+    listaMoedas = [
+      DropdownMenuItem(
+        child: Text("Real"),
+        value: "1.0",
+      ),
+      DropdownMenuItem(
+        child: Text("Dolar"),
+        value: "2.0",
+      ),
+      DropdownMenuItem(
+        child: Text("Euro"),
+        value: "3.0",
+      ),
+    ];
+
+    moedaS2 = "1.0";
+    moedaS1 = "2.0";
+
+    listaMoedas.add(DropdownMenuItem(
+      child: Text("Dolar"),
+      value: "2.0",
+    ));
+
+    listaMoedas.add(
+      DropdownMenuItem(
+        child: Text("Euro"),
+        value: "3.0",
+      ),
+    );
+    
+  }
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,6 +219,7 @@ class _HomeState extends State<Home> {
               } else {
                 dolar = snapshot.data["results"]["currencies"]["USD"]["buy"];
                 euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
+                //  gerarDDList(dolar, euro);
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.all(10.0),
@@ -157,6 +231,11 @@ class _HomeState extends State<Home> {
                         size: 150.0,
                         color: Colors.amber,
                       ),
+                      Text(
+                        "Converter de:",
+                        style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                        textAlign: TextAlign.center,
+                      ),
                       DropdownButton(
                         items: listaMoedas,
                         onChanged: (moeda) {
@@ -165,14 +244,15 @@ class _HomeState extends State<Home> {
                           });
                         },
                         value: moedaS1,
-                        style: TextStyle(fontSize: 25.0, color: Colors.amber),
+                        style: TextStyle(fontSize: 22.0, color: Colors.amber),
                       ),
-                      buildTextField(
-                          "Reais", "R\$", realController, _realChanged),
+                      buildTextField("", "", moedaController1, _moedaChanged),
                       Divider(),
-                      buildTextField(
-                          "Dólares", "U\$", dolarController, _dolarChanged),
-                      Divider(),
+                      Text(
+                        "Para:",
+                        style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                        textAlign: TextAlign.center,
+                      ),
                       DropdownButton(
                         items: listaMoedas,
                         onChanged: (moeda) {
@@ -181,10 +261,22 @@ class _HomeState extends State<Home> {
                           });
                         },
                         value: moedaS2,
-                        style: TextStyle(fontSize: 25.0, color: Colors.amber),
+                        style: TextStyle(fontSize: 22.0, color: Colors.amber),
                       ),
-                      buildTextField(
-                          "Euros", "€", euroController, _euroChanged),
+                      TextField(
+                        controller: moedaController2,
+                        enabled: false,
+                        decoration: InputDecoration(
+                          // labelText: label,
+                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(color: Colors.amber),
+                          // prefixText: prefixo
+                        ),
+                        style: TextStyle(color: Colors.amber, fontSize: 20.0),
+                      ),
+
+                      //   buildTextField(
+                      //      "Euros", "€", moedaController2, _euroChanged),
                       Divider(),
                       RaisedButton(
                         onPressed: () {
@@ -220,7 +312,7 @@ Widget buildTextField(
         border: OutlineInputBorder(),
         labelStyle: TextStyle(color: Colors.amber),
         prefixText: prefixo),
-    style: TextStyle(color: Colors.amber, fontSize: 25.0),
+    style: TextStyle(color: Colors.amber, fontSize: 20.0),
     onChanged: f,
     keyboardType: TextInputType.numberWithOptions(decimal: true),
   );

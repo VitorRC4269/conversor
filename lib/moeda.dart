@@ -38,6 +38,9 @@ class PaginaMoeda extends StatefulWidget {
 }
 
 class _PaginaMoedaState extends State<PaginaMoeda> {
+  final nomeController = TextEditingController();
+  final valorController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,12 +60,56 @@ class _PaginaMoedaState extends State<PaginaMoeda> {
                 size: 150.0,
                 color: Colors.amber,
               ),
+              Text(
+                "Nova moeda:",
+                style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                textAlign: TextAlign.center,
+              ),
+              Divider(),
+              Divider(),
+              TextField(
+                controller: nomeController,
+                decoration: InputDecoration(
+                  labelText: "Nome",
+                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Colors.amber),
+                  //prefixText: prefixo
+                ),
+                style: TextStyle(color: Colors.amber, fontSize: 20.0),
+                // onChanged: f,
+                //keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              Divider(),
+              TextField(
+                controller: valorController,
+                decoration: InputDecoration(
+                  labelText: "Valor",
+                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Colors.amber),
+                  // prefixText: prefixo
+                ),
+                style: TextStyle(color: Colors.amber, fontSize: 20.0),
+                //onChanged: f,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              Divider(),
               RaisedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Home()),
                   );
+                },
+                child: Text(
+                  "Criar Nova Moeda",
+                  style: TextStyle(fontSize: 25.0, color: Colors.black),
+                ),
+                color: Colors.amber,
+              ),
+              Divider(),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   "Voltar",
