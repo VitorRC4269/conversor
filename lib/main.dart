@@ -185,6 +185,23 @@ class _HomeState extends State<Home> {
     
   }
 */
+/*
+  void _awaitReturnValueFromSecondScreen(BuildContext context) async {
+
+      // start the SecondScreen and wait for it to finish with a result
+      final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaginaMoeda(),
+          ));
+
+      // after the SecondScreen result comes back update the Text widget with it
+      setState(() {
+        listaMoedas = result;
+      });
+    }
+  }
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,6 +259,7 @@ class _HomeState extends State<Home> {
                           setState(() {
                             moedaS1 = moeda;
                           });
+                          _moedaChanged(moedaController1.text);
                         },
                         value: moedaS1,
                         style: TextStyle(fontSize: 22.0, color: Colors.amber),
@@ -259,6 +277,7 @@ class _HomeState extends State<Home> {
                           setState(() {
                             moedaS2 = moeda;
                           });
+                          _moedaChanged(moedaController1.text);
                         },
                         value: moedaS2,
                         style: TextStyle(fontSize: 22.0, color: Colors.amber),
@@ -280,11 +299,12 @@ class _HomeState extends State<Home> {
                       Divider(),
                       RaisedButton(
                         onPressed: () {
-                          Navigator.push(
+                          _awaitReturnValueFromSecondScreen(context);
+                          /*Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PaginaMoeda()),
-                          );
+                                builder: (context) => PaginaMoeda(ddbList: listaMoedas,)),
+                          );*/
                         },
                         child: Text(
                           "Criar Nova Moeda",
@@ -300,6 +320,22 @@ class _HomeState extends State<Home> {
         },
       ),
     );
+  }
+
+  void _awaitReturnValueFromSecondScreen(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaginaMoeda(
+            ddbList: listaMoedas,
+          ),
+        ));
+
+    // after the SecondScreen result comes back update the Text widget with it
+    setState(() {
+      listaMoedas = result;
+    });
   }
 }
 

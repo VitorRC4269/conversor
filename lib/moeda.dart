@@ -33,6 +33,11 @@ void main() async {
 }
 
 class PaginaMoeda extends StatefulWidget {
+  final List<DropdownMenuItem<double>> ddbList;
+
+  PaginaMoeda({List<DropdownMenuItem<double>> ddbList})
+      : this.ddbList = ddbList ?? [];
+
   @override
   _PaginaMoedaState createState() => _PaginaMoedaState();
 }
@@ -40,6 +45,12 @@ class PaginaMoeda extends StatefulWidget {
 class _PaginaMoedaState extends State<PaginaMoeda> {
   final nomeController = TextEditingController();
   final valorController = TextEditingController();
+  List ddbLista;
+
+  void _clearAll() {
+    nomeController.text = "";
+    valorController.text = "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +106,13 @@ class _PaginaMoedaState extends State<PaginaMoeda> {
               Divider(),
               RaisedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
+                  ddbLista = widget.ddbList;
+                  ddbLista.add(DropdownMenuItem(
+                    child: Text(nomeController.text),
+                    value: double.parse(valorController.text),
+                  ));
+
+                  _clearAll();
                 },
                 child: Text(
                   "Criar Nova Moeda",
@@ -109,7 +123,7 @@ class _PaginaMoedaState extends State<PaginaMoeda> {
               Divider(),
               RaisedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  _sendDataBack(context, ddbLista);
                 },
                 child: Text(
                   "Voltar",
@@ -120,5 +134,9 @@ class _PaginaMoedaState extends State<PaginaMoeda> {
             ],
           ),
         ));
+  }
+
+  void _sendDataBack(BuildContext context, List ddbL) {
+    Navigator.pop(context, ddbL);
   }
 }
