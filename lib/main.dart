@@ -1,12 +1,11 @@
 import 'package:conversor/moeda.dart';
-import 'package:conversor/teste.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-const request = "https://api.hgbrasil.com/finance?format=json&key=ed0e5683";
+const request = "https://api.hgbrasil.com/finance?format=json&key=0fe78a1e";
 void main() async {
   runApp(MaterialApp(
       home: Home(),
@@ -55,16 +54,11 @@ class _HomeState extends State<Home> {
     return json.decode(response.body);
   }
 
-  //final realController = TextEditingController();
-  //final dolarController = TextEditingController();
-  //final euroController = TextEditingController();
-
   final moedaController1 = TextEditingController();
   final moedaController2 = TextEditingController();
 
   var moedaS1 = 1.0;
   var moedaS2 = 2.0;
-  var resultado;
 
   double dolar;
   double euro;
@@ -80,7 +74,7 @@ class _HomeState extends State<Home> {
 
     if (moedaS1 == 2.0) {
       entrada = dolar;
-    } else if (entrada == 3.0) {
+    } else if (moedaS1 == 3.0) {
       entrada = euro;
     } else {
       entrada = moedaS1;
@@ -99,37 +93,6 @@ class _HomeState extends State<Home> {
     moedaController2.text = (valor * entrada / saida).toStringAsFixed(2);
   }
 
-/*
-  void _realChanged(String text) {
-    if (text.isEmpty) {
-      _clearAll();
-      return;
-    }
-    double real = double.parse(text);
-    dolarController.text = (real / dolar).toStringAsFixed(2);
-    euroController.text = (real / euro).toStringAsFixed(2);
-  }
-
-  void _dolarChanged(String text) {
-    if (text.isEmpty) {
-      _clearAll();
-      return;
-    }
-    double dolar = double.parse(text);
-    realController.text = (dolar * this.dolar).toStringAsFixed(2);
-    euroController.text = (dolar * this.dolar / euro).toStringAsFixed(2);
-  }
-
-  void _euroChanged(String text) {
-    if (text.isEmpty) {
-      _clearAll();
-      return;
-    }
-    double euro = double.parse(text);
-    realController.text = (euro * this.euro).toStringAsFixed(2);
-    dolarController.text = (euro * this.euro / dolar).toStringAsFixed(2);
-  }
-*/
   void _clearAll() {
     moedaController1.text = "";
     moedaController2.text = "";
@@ -149,59 +112,7 @@ class _HomeState extends State<Home> {
       value: 3.0,
     ),
   ];
-/*
-  void gerarDDList(double dolar, double euro) {
-    listaMoedas.clear();
 
-    listaMoedas = [
-      DropdownMenuItem(
-        child: Text("Real"),
-        value: "1.0",
-      ),
-      DropdownMenuItem(
-        child: Text("Dolar"),
-        value: "2.0",
-      ),
-      DropdownMenuItem(
-        child: Text("Euro"),
-        value: "3.0",
-      ),
-    ];
-
-    moedaS2 = "1.0";
-    moedaS1 = "2.0";
-
-    listaMoedas.add(DropdownMenuItem(
-      child: Text("Dolar"),
-      value: "2.0",
-    ));
-
-    listaMoedas.add(
-      DropdownMenuItem(
-        child: Text("Euro"),
-        value: "3.0",
-      ),
-    );
-    
-  }
-*/
-/*
-  void _awaitReturnValueFromSecondScreen(BuildContext context) async {
-
-      // start the SecondScreen and wait for it to finish with a result
-      final result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PaginaMoeda(),
-          ));
-
-      // after the SecondScreen result comes back update the Text widget with it
-      setState(() {
-        listaMoedas = result;
-      });
-    }
-  }
-*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -236,7 +147,6 @@ class _HomeState extends State<Home> {
               } else {
                 dolar = snapshot.data["results"]["currencies"]["USD"]["buy"];
                 euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
-                //  gerarDDList(dolar, euro);
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.all(10.0),
@@ -286,25 +196,15 @@ class _HomeState extends State<Home> {
                         controller: moedaController2,
                         enabled: false,
                         decoration: InputDecoration(
-                          // labelText: label,
                           border: OutlineInputBorder(),
                           labelStyle: TextStyle(color: Colors.amber),
-                          // prefixText: prefixo
                         ),
                         style: TextStyle(color: Colors.amber, fontSize: 20.0),
                       ),
-
-                      //   buildTextField(
-                      //      "Euros", "€", moedaController2, _euroChanged),
                       Divider(),
                       RaisedButton(
                         onPressed: () {
                           _awaitReturnValueFromSecondScreen(context);
-                          /*Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PaginaMoeda(ddbList: listaMoedas,)),
-                          );*/
                         },
                         child: Text(
                           "Criar Nova Moeda",
@@ -323,7 +223,6 @@ class _HomeState extends State<Home> {
   }
 
   void _awaitReturnValueFromSecondScreen(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -332,7 +231,6 @@ class _HomeState extends State<Home> {
           ),
         ));
 
-    // after the SecondScreen result comes back update the Text widget with it
     setState(() {
       listaMoedas = result;
     });
